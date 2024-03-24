@@ -1,0 +1,52 @@
+<div class="flex flex-col rounded ring-1 ring-gray-400 shadow-gray-500 shadow bg-gray-100 px-4 py-3">
+  <button class="absolute top-1.5 right-1.5 text-blue-950" (click)="close()">close</button>
+  <h2 class="text-lg font-bold">Add New Question</h2>
+  <div class="my-4" [formGroup]="questionForm">
+    <div class="mb-3">
+      <select class="rounded ring-blue-900 ring-2 pl-4 pr-6 py-2 w-full" formControlName="type">
+        <option value="">Please select question type</option>
+        @for (type of questionTypeList; track type.type) {
+          <option [value]="type.type">{{type.label}}</option>
+        }
+      </select>
+    </div>
+    @if (questionType | async) {
+      <label for="question">Question</label>
+      <div class="mb-3">
+        <input id="question" class="rounded ring-blue-900 ring-2 pl-4 pr-6 py-2 w-full"
+               type="text" placeholder="Type your question here"
+               formControlName="question">
+      </div>
+      @if (choices) {
+        <p class="m-0">Answers</p>
+        <div formArrayName="choices">
+          @for (choice of choices.controls; let index = $index; track index) {
+            <div class="mb-3 flex gap-2">
+              <input class="rounded ring-blue-900 ring-2 pl-4 pr-6 py-2 w-full"
+                     type="text" placeholder="Answer option"
+                     [value]="choice.value"
+                     [formControlName]="index">
+              @if(index > 1) {
+                <button class="font-bold bg-red-50 text-red-950 text-sm ring-2 ring-red-800 rounded py-1 px-2" (click)="removeAnswer(index)">remove</button>
+              }
+            </div>
+          }
+        </div>
+        @if (choices && choices.controls.length < 5) {
+          <button class="font-bold bg-blue-50 text-blue-950 text-sm ring-2 ring-blue-900 rounded py-1 px-2" (click)="addAnswer()">Add another answer</button>
+        }
+        <div class="my-3">
+          <label><input type="checkbox" formControlName="allowOther"> Allow user to specific their own answer</label>
+        </div>
+      }
+      <div class="my-3">
+        <label><input type="checkbox" formControlName="required"> This field is required</label>
+      </div>
+    }
+  </div>
+  <div class="flex justify-end">
+    <button class="font-bold text-white bg-blue-900 rounded py-2 px-4 disabled:opacity-30"
+            [disabled]="questionForm.invalid"
+            (click)="addQuestionConfig()">Submit</button>
+  </div>
+</div>

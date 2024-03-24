@@ -1,0 +1,7 @@
+:host {
+    height: 100%;
+}
+.questions-section {
+    width: 100%;
+    max-width: 600px;
+}

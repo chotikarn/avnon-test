@@ -1,0 +1,36 @@
+<div class="h-full w-full flex flex-col items-center justify-center">
+  <h1 class="text-4xl mb-4">Welcome to AVNON Question Test</h1>
+  @if (questions && questions.controls.length > 0) {
+    <div class="questions-section rounded ring-1 ring-blue-950 p-4 m-4" [formGroup]="questionsForm">
+      <div [formArrayName]="'questions'">
+        @for (question of questions.controls; let index = $index; track index) {
+          <div class="mb-2" [formGroupName]="index">
+            <h2 class="text-xl mb-2">{{ question.value.question }}</h2>
+            @if (question.value.type === 'textarea') {
+              <textarea class="rounded ring-1 ring-blue-950 w-full p-2" [formControlName]="'answer'"></textarea>
+            }
+            @if (question.value.type === 'checkbox') {
+              <div class="flex flex-col gap-1" [formArrayName]="'choices'">
+                @for (choice of getQuestionChoices(question).controls; let index = $index; track choice.value) {
+                  <label [formGroupName]="index"><input type="checkbox" formControlName="select"> {{choice.value.value}}</label>
+                }
+              </div>
+              @if (getQuestionChoices(question).controls.at(-1); as lastControl) {
+                @if (lastControl?.value?.value === 'Other' && lastControl?.value?.select) {
+                  <input class="rounded ring-1 ring-blue-950 w-auto p-2 ml-4" [formControlName]="'other'" [placeholder]="'Please specific'">
+                }
+              }
+            }
+          </div>
+        }
+      </div>
+      <div class="flex justify-end">
+        <button class="font-bold text-white bg-blue-900 rounded py-2 px-4 disabled:opacity-30"
+                [disabled]="false"
+                (click)="submit()">Review my answer</button>
+      </div>
+    </div>
+  }
+  <button class="font-bold text-white bg-blue-900 rounded py-2 px-4"
+          (click)="addQuestion()">Add Question</button>
+</div>
